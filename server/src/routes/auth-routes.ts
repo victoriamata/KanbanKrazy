@@ -2,31 +2,36 @@ import { Router, Request, Response } from 'express';
 import { User } from '../models/user.js';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
+import dotenv from 'dotenv';
+dotenv.config();
 
 const SECRET_KEY= process.env.JWT_SECRET_KEY;
+if (!SECRET_KEY) {
+  throw new Error('JWT_SECRET_KEY is not defined in the environment variables');
+}
 
 export const login = async (req: Request, res: Response) => {
   // If the user exists and the password is correct, return a JWT token
-  const { email, password } = req.body;
+  const { username, password } = req.body;
 
   try {
     // Check if the user exists
-    const user = await User.findOne({ where: { email } });
+    const user = await User.findOne({ where: { username } });
     if (!user) {
-      return res.status(401).json({ message: 'Invalid email or password' });
+      return res.status(401).json({ message: 'Invalid username or password' });
     }
 
     // Verify the password
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) {
-      return res.status(401).json({ message: 'Invalid email or password' });
+      return res.status(401).json({ message: 'Invalid username or password' });
     }
 
     // Generate a JWT token
     const token = jwt.sign(
       {
         id: user.id,
-        email: user.email,
+        username: user.username,
       },
       SECRET_KEY,
       { expiresIn: '1h' } // Token expires in 1 hour

@@ -22,9 +22,9 @@ const login = async (userInfo: UserLogin) => {
 
     // Return the token
     return data.token;
-  } catch (error: any) {
-    console.error("Login error:", error.message);
-    throw new Error(error.message || "An unexpected error occurred");
+  } catch (err) {
+    console.error("Login error:", err);
+    return err;
   }
 };
 

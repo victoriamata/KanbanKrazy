@@ -12,7 +12,10 @@ class AuthService {
   loggedIn() {
     // Return a value that indicates if the user is logged in
     const token = this.getToken();
-    return !!token && !this.isTokenExpired(token);
+    if (!token) {
+      return false; // User is not logged in if no token exists
+    }
+    return !this.isTokenExpired(token);
   }
 
   isTokenExpired(token: string) {
@@ -27,10 +30,14 @@ class AuthService {
     }
   }
 
-  getToken(): string | null {
+  getToken(): string {
     // Return the token from localStorage
-    return localStorage.getItem('id_token');
+    const token = localStorage.getItem('id_token');
+  if (!token) {
+    console.error('No token found in localStorage');
   }
+  return token || ''; // Return an empty string if no token exists
+}
 
   login(idToken: string) {
     // Set the token to localStorage
