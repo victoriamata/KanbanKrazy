@@ -1,3 +1,4 @@
+//activity 25 boilerplate
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 
@@ -6,30 +7,22 @@ interface JwtPayload {
 }
 
 export const authenticateToken = (req: Request, res: Response, next: NextFunction) => {
-  // Get the token from the request headers
-  const authHeader = req.headers['authorization'];
-  const token = authHeader && authHeader.split(' ')[1]; 
+  const authHeader = req.headers.authorization;
 
-  if (!token) {
-    return res.status(401).json({ message: 'Access token missing or invalid' });
-  }
+  if (authHeader) {
+    const token = authHeader.split(' ')[1];
+    const secretKey = process.env.JWT_SECRET_KEY || '';
 
-  try {
-    // Verify the token
-    const SECRET_KEY = process.env.JWT_SECRET_KEY || ''
-     
-    const decoded = jwt.verify(token, SECRET_KEY) as JwtPayload;
+    jwt.verify(token, secretKey, (err, user) => {
+      if (err) {
+        return res.sendStatus(403); 
+      }
 
-    // Attach user data to the request object
-    req.user = {
-      username: decoded.username
-    };
-
-    // Proceed to the next middleware
-    return next();
-  } catch (error) {
-    console.error("Token verification failed:", error);
-    return res.status(403).json({ message: 'Invalid or expired token' });
+      req.user = user as JwtPayload;
+      return next(); 
+    });
+  } else {
+    res.sendStatus(401); 
   }
 };
 
