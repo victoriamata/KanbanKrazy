@@ -12,7 +12,14 @@
    You can clone this repository onto your local computer. Run the command "npm install" to install all modules. Run "npm run build" to compile the TypeScript into JavaScript. Start the application with "npm run start:dev".
    ## Usage:
    Here is the deployed link: 
-   **Adding a screenshot to app**
+  https://kanbankrazy.onrender.com
+
+
+
+
+   Screenshots of this app:
+  ![](./assets/screenshot.png)
+  ![](./assets/screenshot2.png)
    ## License: 
    [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
    [Click to read more!](https://opensource.org/licenses/MIT)
